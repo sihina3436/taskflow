@@ -7,6 +7,7 @@ export interface ITodo extends Document {
   completed: boolean;
   due_date?: Date;
   priority: "low" | "medium" | "high";
+  image: string;
 }
 
 const TodoSchema: Schema<ITodo> = new Schema(
@@ -36,6 +37,11 @@ const TodoSchema: Schema<ITodo> = new Schema(
       enum: ["low", "medium", "high"],
       default: "medium",
     },
+    image:{
+        type: String,
+        required: true,
+    }
+
   },
   {
     timestamps: true,
