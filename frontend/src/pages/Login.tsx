@@ -1,7 +1,32 @@
-import React from "react";
+
 import loginImg from "../assets/login.jpg";
+import { useState, type FormEvent } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {setUser} from "../redux/authentication/authSlice";
+import {useLoginMutation} from "../redux/authentication/authApi";
+
 
 const Login = () => {
+
+  const [email, setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation(); 
+  
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const userData = await login({ email, password }).unwrap();
+      dispatch(setUser(userData.user));
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  }
+
+
   return (
     <div className="min-h-screen bg-primaryLight flex items-center justify-center px-4">
 
@@ -19,7 +44,7 @@ const Login = () => {
             Login to your TaskFlow account
           </p>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
 
             {/* EMAIL */}
             <div className="relative group">
@@ -28,6 +53,8 @@ const Login = () => {
               <input
                 type="email"
                 placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full border border-gray-200 bg-gray-50 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition"
               />
             </div>
@@ -39,6 +66,8 @@ const Login = () => {
               <input
                 type="password"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full border border-gray-200 bg-gray-50 rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition"
               />
             </div>
@@ -46,6 +75,7 @@ const Login = () => {
             {/* BUTTON */}
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primaryDark transition duration-200 shadow-md"
             >
               Login
@@ -54,7 +84,7 @@ const Login = () => {
             <p className="text-sm text-center text-gray-500 mt-4">
               Don’t have an account?{" "}
               <span className="text-primary font-medium cursor-pointer">
-                Register
+                Sign Up
               </span>
             </p>
           </form>
