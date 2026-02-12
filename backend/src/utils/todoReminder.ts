@@ -1,30 +1,46 @@
 import cron from "node-cron";
 import Todo from "../models/todo.model";
-import { io } from "./socket";
+import { Server } from "socket.io";
 
-cron.schedule("*/5 * * * *", async () => {
-  try {
-    const now = new Date();
-    const nextHour = new Date(now.getTime() + 60 * 60 * 1000);
+export const startReminder = (io: Server) => {
+  cron.schedule("*/1 * * * *", async () => {
+    try {
+      console.log("⏳ Cron running...");
 
-    const todos = await Todo.find({
-      due_date: { $gte: now, $lte: nextHour },
-      completed: false,
-      notified: false,
-    });
+      const now = Date.now();
+      const oneHourLater = now + 60 * 60 * 1000;
 
-    for (const todo of todos) {
-      io.to(todo.user_id.toString()).emit("due_soon", {
-        todoId: todo._id,
-        title: todo.title,
-        due_date: todo.due_date,
-        priority: todo.priority,
+      const todos = await Todo.find({
+        due_date: { $exists: true },
+        completed: false,
+        notified: false,
       });
 
-      todo.notified = true;
-      await todo.save();
+      console.log("📌 Checking todos:", todos.length);
+
+      for (const todo of todos) {
+        if (!todo.due_date) continue;
+
+        const dueTime = new Date(todo.due_date).getTime();
+
+        // 🔥 Compare timestamps (timezone safe)
+        if (dueTime >= now && dueTime <= oneHourLater) {
+          console.log("🔔 Sending reminder to:", todo.user_id.toString());
+
+          io.to(todo.user_id.toString()).emit("due_soon", {
+            todoId: todo._id,
+            title: todo.title,
+            due_date: todo.due_date,
+            priority: todo.priority,
+          });
+
+          todo.notified = true;
+          await todo.save();
+        }
+      }
+
+    } catch (error) {
+      console.error("❌ Cron error:", error);
     }
-  } catch (error) {
-    console.error("Cron job error:", error);
-  }
-});
+  });
+};
