@@ -8,7 +8,6 @@ export interface ITodo extends Document {
   due_date?: Date;
   priority: "low" | "medium" | "high";
   status: "Completed" | "In Progress" | "Overdue" | "Not Started";
-  image: string;
   notified: boolean;
   category: mongoose.Types.ObjectId;
 }
@@ -44,10 +43,6 @@ const TodoSchema: Schema<ITodo> = new Schema(
       type: String,
       enum: ["Completed", "In Progress", "Overdue", "Not Started"],
       default: "Not Started",
-    },
-    image: {
-      type: String,
-      required: true,
     },
     notified: {
       type: Boolean,
