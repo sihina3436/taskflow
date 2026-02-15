@@ -6,7 +6,7 @@ export const getTodoStatusPercentage = async (req: Request, res: Response): Prom
     try{
         const userId = req.params.userId;
         const totalTodos = await Todo.countDocuments({ user_id: userId });
-        const completedTodos =  await Todo.countDocuments({ user_id: userId, status: 'completed'});
+        const completedTodos =  await Todo.countDocuments({ user_id: userId, status: 'Completed'});
         const InProgressTodos = await Todo.countDocuments({ user_id: userId, status: 'In Progress'});
         const OverdueTodos = await Todo.countDocuments({ user_id: userId, status: 'Overdue'});
         const NotStartedTodos = await Todo.countDocuments({ user_id: userId, status: 'Not Started'});
@@ -14,10 +14,12 @@ export const getTodoStatusPercentage = async (req: Request, res: Response): Prom
 
 
 
-        const percentage = totalTodos === 0 ? 0 : (completedTodos / totalTodos) * 100;
-        const inProgressPercentage = totalTodos === 0 ? 0 : (InProgressTodos / totalTodos) * 100;
-        const overduePercentage = totalTodos === 0 ? 0 : (OverdueTodos / totalTodos) * 100;
-        const notStartedPercentage = totalTodos === 0 ? 0 : (NotStartedTodos / totalTodos) * 100;
+const percentage = totalTodos === 0 ? 0 : Math.round((completedTodos / totalTodos) * 100 * 100) / 100;
+const inProgressPercentage = totalTodos === 0 ? 0 : Math.round((InProgressTodos / totalTodos) * 100 * 100) / 100;
+const overduePercentage = totalTodos === 0 ? 0 : Math.round((OverdueTodos / totalTodos) * 100 * 100) / 100;
+const notStartedPercentage = totalTodos === 0 ? 0 : Math.round((NotStartedTodos / totalTodos) * 100 * 100) / 100;
+
+        
 
         res.status(200).json({ percentage, inProgressPercentage, overduePercentage, notStartedPercentage });
     }catch(error){

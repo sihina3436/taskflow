@@ -1,15 +1,19 @@
 import { Request, Response } from "express";
 import Todo from "../models/todo.model";
+import { AuthRequest } from "../middleware/auth.middleware";
 
-// CREATE TODO
-export const createTodo = async (req: Request, res: Response): Promise<void> => {
+/* ================= CREATE ================= */
+
+export const createTodo = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { user_id, title, description, due_date, priority, status, image, category } = req.body;
+    const { title, description, due_date, priority, status, category } = req.body;
 
-    if (!user_id || !title || !image) {
+    if (!title) {
       res.status(400).json({ message: "Missing required fields" });
       return;
     }
+
+    const user_id = (req.user as any).id;
 
     const todo = await Todo.create({
       user_id,
@@ -18,22 +22,21 @@ export const createTodo = async (req: Request, res: Response): Promise<void> => 
       due_date,
       priority,
       status,
-      image,
-      category,
+      category
     });
 
     res.status(201).json({
       message: "Todo created successfully",
       todo,
     });
-
   } catch (error) {
     console.error("Create Todo Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// GET TODOS BY USER
+/* ================= GET BY USER ================= */
+
 export const getTodosByUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId } = req.params;
@@ -47,7 +50,8 @@ export const getTodosByUser = async (req: Request, res: Response): Promise<void>
   }
 };
 
-// GET TODO BY ID
+/* ================= GET BY ID ================= */
+
 export const getTodoById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -66,7 +70,8 @@ export const getTodoById = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-// GET TODAY TODOS BY USER
+/* ================= TODAY ================= */
+
 export const getTodoByNowDatebyUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -89,7 +94,8 @@ export const getTodoByNowDatebyUser = async (req: Request, res: Response): Promi
   }
 };
 
-// UPDATE TODO STATUS
+/* ================= STATUS ================= */
+
 export const updateTodoStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const { todoId } = req.params;
@@ -110,21 +116,22 @@ export const updateTodoStatus = async (req: Request, res: Response): Promise<voi
       message: "Status updated",
       todo: updated,
     });
-
   } catch (error) {
     console.error("Update Status Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// MARK TODO COMPLETED
+/* ================= COMPLETE ================= */
+
 export const setTodoIsCompleted = async (req: Request, res: Response): Promise<void> => {
   try {
     const { todoId } = req.params;
+    const { completed } = req.body;
 
     const updated = await Todo.findByIdAndUpdate(
       todoId,
-      { completed: true, status: "Completed" },
+      { completed, status: completed ? "Completed" : "In Progress" },
       { new: true }
     );
 
@@ -133,13 +140,19 @@ export const setTodoIsCompleted = async (req: Request, res: Response): Promise<v
       return;
     }
 
-    res.status(200).json({
-      message: "Todo marked as completed",
-      todo: updated,
-    });
-
+    res.status(200).json(updated);
   } catch (error) {
-    console.error("Set Completed Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ================= DELETE (missing before) ================= */
+
+export const deleteTodo = async (req: Request, res: Response): Promise<void> => {
+  try {
+    await Todo.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Todo deleted" });
+  } catch {
     res.status(500).json({ message: "Server error" });
   }
 };
