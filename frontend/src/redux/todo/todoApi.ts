@@ -1,26 +1,35 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getBaseUrl } from "../../util/util";
 
-
+/* =========================
+   TYPES
+========================= */
 
 export interface Todo {
   _id: string;
   title: string;
   description?: string;
-  status: "pending" | "in-progress" | "completed";
-  isCompleted: boolean;
-  userId: string;
+  due_date?: string;
+
+  status: "Completed" | "In Progress" | "Overdue" | "Not Started";
+
+  completed: boolean;
+  user_id: string;
+
   createdAt: string;
   updatedAt: string;
 }
 
 export interface StatusPercentage {
-  completed: number;
-  pending: number;
-  inProgress: number;
+  percentage: number;
+  inProgressPercentage: number;
+  overduePercentage: number;
+  notStartedPercentage: number;
 }
 
-
+/* =========================
+   API
+========================= */
 
 export const todoApi = createApi({
   reducerPath: "todoApi",
@@ -28,12 +37,19 @@ export const todoApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${getBaseUrl()}/api/todos`,
     credentials: "include",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
 
   tagTypes: ["Todos"],
 
   endpoints: (builder) => ({
-    getTodoById: builder.query<Todo[], void>({
+    getTodoById: builder.query<Todo, string>({
       query: (id) => `/${id}`,
       providesTags: ["Todos"],
     }),
@@ -76,15 +92,18 @@ export const todoApi = createApi({
       query: (userId) => `/status-percentage/${userId}`,
       providesTags: ["Todos"],
     }),
-    setTodoIsCompleted: builder.mutation<Todo, { todoId: string; isCompleted: boolean }>({
-      query: ({ todoId, isCompleted }) => ({
+
+    setTodoIsCompleted: builder.mutation<
+      Todo,
+      { todoId: string; completed: boolean }
+    >({
+      query: ({ todoId, completed }) => ({
         url: `/complete/${todoId}`,
         method: "PUT",
-        body: { isCompleted },
+        body: { completed },
       }),
       invalidatesTags: ["Todos"],
     }),
-
   }),
 });
 
@@ -94,6 +113,6 @@ export const {
   useGetTodoByUserQuery,
   useUpdateTodoStatusMutation,
   useDeleteTodoMutation,
- useGetTodoStatusPercentageQuery,
-    useSetTodoIsCompletedMutation,
+  useGetTodoStatusPercentageQuery,
+  useSetTodoIsCompletedMutation,
 } = todoApi;
