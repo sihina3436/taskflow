@@ -7,10 +7,8 @@ import { categoryApi } from "./category/categoryApi";
 
 export const store = configureStore({
   reducer: {
-    /* normal slices */
     auth: authReducer,
 
-    /* RTK Query */
     [authApi.reducerPath]: authApi.reducer,
     [todoApi.reducerPath]: todoApi.reducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
