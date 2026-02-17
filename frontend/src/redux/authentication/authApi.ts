@@ -1,7 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getBaseUrl } from "../../util/util";
 
-
+/* =========================
+   TYPES
+========================= */
 
 export interface User {
   _id: string;
@@ -12,6 +14,7 @@ export interface User {
 export interface AuthResponse {
   user: User;
   message: string;
+  token: string;
 }
 
 export interface LoginRequest {
@@ -23,39 +26,79 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
+  gender: string;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
 
+export interface ResetPasswordRequest {
+  email: string;
+  otp: string;
+  newPassword: string;
+}
+
+/* =========================
+   API
+========================= */
 
 export const authApi = createApi({
   reducerPath: "authApi",
 
   baseQuery: fetchBaseQuery({
     baseUrl: `${getBaseUrl()}/api/auth`,
-    credentials: "include", // send cookies (JWT/session)
+    credentials: "include",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
 
   tagTypes: ["Auth"],
 
   endpoints: (builder) => ({
- 
     login: builder.mutation<AuthResponse, LoginRequest>({
-      query: (loginData) => ({
+      query: (data) => ({
         url: "/login",
         method: "POST",
-        body: loginData,
+        body: data,
       }),
       invalidatesTags: ["Auth"],
     }),
 
-
     register: builder.mutation<AuthResponse, RegisterRequest>({
-      query: (registerData) => ({
+      query: (data) => ({
         url: "/register",
         method: "POST",
-        body: registerData,
+        body: data,
       }),
       invalidatesTags: ["Auth"],
+    }),
+
+    forgotPassword: builder.mutation<
+      { message: string },
+      ForgotPasswordRequest
+    >({
+      query: (data) => ({
+        url: "/forgot-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    resetPassword: builder.mutation<
+      { message: string },
+      ResetPasswordRequest
+    >({
+      query: (data) => ({
+        url: "/reset-password",
+        method: "POST",
+        body: data,
+      }),
     }),
 
     logout: builder.mutation<{ message: string }, void>({
@@ -65,18 +108,17 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
-
-
-
   }),
 });
 
-
+/* =========================
+   HOOKS
+========================= */
 
 export const {
   useLoginMutation,
   useRegisterMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
   useLogoutMutation,
 } = authApi;
-
-export default authApi;
