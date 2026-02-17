@@ -16,13 +16,20 @@ export const categoryApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${getBaseUrl()}/api/categories`,
     credentials: "include",
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    }
   }),
 
   tagTypes: ["Categories"],
 
   endpoints: (builder) => ({
-    getCategories: builder.query<Category[], string>({
-      query: () => `/`,
+    getCategoriesByUser: builder.query<Category[], string>({
+      query: (id) => `/${id}`,
       providesTags: ["Categories"],
     }),
 
@@ -34,10 +41,19 @@ export const categoryApi = createApi({
       }),
       invalidatesTags: ["Categories"],
     }),
+
+    deleteCategory: builder.mutation<{ message: string }, string>({
+      query: (id) => ({
+        url: `/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Categories"],
+    }),
   }),
 });
 
 export const {
-  useGetCategoriesQuery,
+  useGetCategoriesByUserQuery,
   useCreateCategoryMutation,
+  useDeleteCategoryMutation
 } = categoryApi;
