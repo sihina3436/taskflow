@@ -96,14 +96,20 @@ export const getTodoByNowDatebyUser = async (req: Request, res: Response): Promi
 
 /* ================= STATUS ================= */
 
-export const updateTodoStatus = async (req: Request, res: Response): Promise<void> => {
+export const updateTodoStatus = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { todoId } = req.params;
     const { status } = req.body;
 
     const updated = await Todo.findByIdAndUpdate(
       todoId,
-      { status },
+      {
+        status,
+        completed: status === "Completed", // sync completed
+      },
       { new: true }
     );
 
@@ -112,10 +118,8 @@ export const updateTodoStatus = async (req: Request, res: Response): Promise<voi
       return;
     }
 
-    res.status(200).json({
-      message: "Status updated",
-      todo: updated,
-    });
+    // IMPORTANT: return todo directly (RTK expects this)
+    res.status(200).json(updated);
   } catch (error) {
     console.error("Update Status Error:", error);
     res.status(500).json({ message: "Server error" });
@@ -124,14 +128,20 @@ export const updateTodoStatus = async (req: Request, res: Response): Promise<voi
 
 /* ================= COMPLETE ================= */
 
-export const setTodoIsCompleted = async (req: Request, res: Response): Promise<void> => {
+export const setTodoIsCompleted = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { todoId } = req.params;
     const { completed } = req.body;
 
     const updated = await Todo.findByIdAndUpdate(
       todoId,
-      { completed, status: completed ? "Completed" : "In Progress" },
+      {
+        completed,
+        status: completed ? "Completed" : "In Progress",
+      },
       { new: true }
     );
 

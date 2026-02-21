@@ -1,7 +1,10 @@
 import Layout from "../componets/Layout";
 import TaskCard from "../componets/dashboard/TaskCard";
 import { useSelector } from "react-redux";
-import { useGetTodoByUserQuery } from "../redux/todo/todoApi";
+import {
+  useGetTodoByUserQuery,
+  useUpdateTodoStatusMutation,
+} from "../redux/todo/todoApi";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const AllTasks = () => {
@@ -14,12 +17,29 @@ const AllTasks = () => {
       skip: !user?.id,
     });
 
-  /* ================= GET QUERY PARAMS ================= */
+  const [updateTodoStatus] = useUpdateTodoStatusMutation();
+
+  /* ===== UPDATE STATUS ===== */
+  const handleStatusChange = async (
+    todoId: string,
+    newStatus: string
+  ) => {
+    try {
+      await updateTodoStatus({
+        todoId,
+        status: newStatus as any,
+      }).unwrap();
+    } catch (error) {
+      console.error("Status update failed", error);
+    }
+  };
+
+  /* ===== QUERY PARAMS ===== */
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("search")?.toLowerCase() || "";
   const dateQuery = params.get("date");
 
-  /* ================= FILTER TODOS ================= */
+  /* ===== FILTER ===== */
   const filteredTodos = todos.filter((todo: any) => {
     const matchesSearch = searchQuery
       ? todo.title.toLowerCase().includes(searchQuery)
@@ -32,14 +52,14 @@ const AllTasks = () => {
     return matchesSearch && matchesDate;
   });
 
-  /* ================= SORT BY NEAREST DUE DATE ================= */
+  /* ===== SORT ===== */
   const sortedTodos = [...filteredTodos].sort(
     (a: any, b: any) =>
       new Date(a.due_date).getTime() -
       new Date(b.due_date).getTime()
   );
 
-  /* ================= STATS ================= */
+  /* ===== STATS ===== */
   const total = sortedTodos.length;
   const completed = sortedTodos.filter((t: any) => t.completed).length;
   const pending = total - completed;
@@ -61,60 +81,32 @@ const AllTasks = () => {
 
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-gray-600 hover:text-primary transition"
+            className="text-gray-600 hover:text-blue-600"
           >
-            <i className="ri-arrow-left-line"></i>
-            Back
+            ← Back
           </button>
         </div>
 
-        {/* ACTIVE FILTER INFO */}
-        {(searchQuery || dateQuery) && (
-          <div className="mb-6 flex items-center justify-between bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-sm">
-            <div className="flex gap-4">
-              {searchQuery && (
-                <span>
-                  🔎 Search: <strong>{searchQuery}</strong>
-                </span>
-              )}
-              {dateQuery && (
-                <span>
-                  📅 Date: <strong>{dateQuery}</strong>
-                </span>
-              )}
-            </div>
-
-            <button
-              onClick={() => navigate("/my-task")}
-              className="text-primary hover:underline"
-            >
-              Clear Filters
-            </button>
-          </div>
-        )}
-
-        {/* STATS CARDS */}
+        {/* STATS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border">
             <h4 className="text-gray-500 text-sm">Total Tasks</h4>
-            <p className="text-2xl font-bold text-gray-800">{total}</p>
+            <p className="text-2xl font-bold">{total}</p>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border">
             <h4 className="text-gray-500 text-sm">Pending</h4>
             <p className="text-2xl font-bold text-orange-500">
               {pending}
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border">
             <h4 className="text-gray-500 text-sm">Completed</h4>
             <p className="text-2xl font-bold text-green-500">
               {completed}
             </p>
           </div>
-
         </div>
 
         {/* TASK LIST */}
@@ -123,7 +115,7 @@ const AllTasks = () => {
 
           {!isLoading && sortedTodos.length === 0 && (
             <div className="bg-white rounded-2xl p-8 text-center text-gray-500 shadow-sm">
-              No tasks found.
+              No tasks found
             </div>
           )}
 
@@ -137,6 +129,7 @@ const AllTasks = () => {
               createdAt={todo.createdAt}
               due_date={todo.due_date}
               priority={todo.priority}
+              onStatusChange={handleStatusChange}
             />
           ))}
         </div>

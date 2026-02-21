@@ -3,6 +3,7 @@ import {
   useSetTodoIsCompletedMutation,
   useDeleteTodoMutation,
 } from "../../redux/todo/todoApi";
+import { useState } from "react";
 
 interface Props {
   id: string;
@@ -12,6 +13,7 @@ interface Props {
   createdAt: string;
   due_date: string;
   priority: "low" | "medium" | "high";
+  onStatusChange?: (id: string, status: string) => Promise<void>;
 }
 
 const TaskCard: React.FC<Props> = ({
@@ -22,9 +24,11 @@ const TaskCard: React.FC<Props> = ({
   createdAt,
   due_date,
   priority,
+  onStatusChange,
 }) => {
   const [complete] = useSetTodoIsCompletedMutation();
   const [remove] = useDeleteTodoMutation();
+  const [loading, setLoading] = useState(false);
 
   const today = new Date();
   const dueDate = new Date(due_date);
@@ -67,6 +71,17 @@ const TaskCard: React.FC<Props> = ({
     countdownText = `Due in ${diffDays} day(s)`;
   }
 
+  /* ===== STATUS CHANGE ===== */
+  const handleStatusChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    if (!onStatusChange) return;
+
+    setLoading(true);
+    await onStatusChange(id, e.target.value);
+    setLoading(false);
+  };
+
   return (
     <div
       className={`
@@ -100,28 +115,19 @@ const TaskCard: React.FC<Props> = ({
       {/* CONTENT */}
       <div className="flex-1 min-w-0">
 
-        {/* AWESOME POPUP STRIP */}
+        {/* ALERT STRIP */}
         {(isUrgent || isOverdue) && (
           <div
-            className={`
-              mb-4 px-4 py-2 rounded-2xl text-xs font-medium
-              flex items-center justify-between
-              backdrop-blur-sm border
-              ${
-                isOverdue
-                  ? "bg-red-50/60 border-red-200 text-red-600"
-                  : "bg-orange-50/60 border-orange-200 text-orange-600"
-              }
-            `}
+            className={`mb-4 px-4 py-2 rounded-2xl text-xs font-medium flex justify-between border ${
+              isOverdue
+                ? "bg-red-50 border-red-200 text-red-600"
+                : "bg-orange-50 border-orange-200 text-orange-600"
+            }`}
           >
-            <div className="flex items-center gap-2">
-              <i className="ri-notification-3-line" />
+            <span>
               {isOverdue ? "Task Overdue" : "Deadline Approaching"}
-            </div>
-
-            <span className="text-[11px] font-semibold">
-              {countdownText}
             </span>
+            <span>{countdownText}</span>
           </div>
         )}
 
@@ -135,7 +141,7 @@ const TaskCard: React.FC<Props> = ({
           {desc}
         </p>
 
-        {/* META */}
+        {/* STATUS + PRIORITY BADGES */}
         <div className="flex items-center gap-3 mt-3 flex-wrap">
           <span
             className={`px-3 py-1 rounded-full text-xs font-medium ${statusColor[status]}`}
@@ -150,45 +156,53 @@ const TaskCard: React.FC<Props> = ({
           </span>
         </div>
 
-        {/* DUE + CREATED DATE */}
-        <div className="mt-4 flex flex-col gap-1 text-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-gray-500">
-              <i className="ri-calendar-event-line" />
-              <span>
-                Due:{" "}
-                <span className="font-medium text-gray-700">
-                  {dueDate.toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </span>
-              </span>
-            </div>
+        {/* ⭐ MODERN DROPDOWN */}
+        <div className="mt-4">
+          <label className="text-xs font-medium text-gray-500 mb-2 block">
+            Change Status
+          </label>
 
-            <div
-              className={`text-xs font-semibold ${
-                isOverdue
-                  ? "text-red-600"
-                  : isUrgent
-                  ? "text-orange-500"
-                  : "text-gray-500"
-              }`}
+          <div className="relative w-full sm:w-60">
+            <select
+              value={status}
+              onChange={handleStatusChange}
+              disabled={loading}
+              className="
+                w-full appearance-none
+                bg-white/70 backdrop-blur-md
+                border border-gray-200
+                rounded-2xl
+                px-4 py-2.5 pr-10
+                text-sm font-medium text-gray-700
+                shadow-sm
+                hover:border-blue-300
+                focus:ring-2 focus:ring-blue-400
+                focus:border-blue-400
+                transition-all duration-200
+                cursor-pointer
+              "
             >
-              {countdownText}
+              <option value="Not Started">🟢 Not Started</option>
+              <option value="In Progress">🔵 In Progress</option>
+              <option value="Overdue">🔴 Overdue</option>
+              <option value="Completed">✅ Completed</option>
+            </select>
+
+            {/* CUSTOM ARROW */}
+            <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-400">
+              <i className="ri-arrow-down-s-line text-lg"></i>
             </div>
           </div>
+        </div>
 
-          <div className="flex items-center gap-2 text-xs text-gray-400">
-            <i className="ri-time-line" />
-            Created:{" "}
-            {new Date(createdAt).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          </div>
+        {/* DATES */}
+        <div className="mt-4 text-sm text-gray-500">
+          Due: {dueDate.toLocaleDateString()}
+        </div>
+
+        <div className="text-xs text-gray-400 mt-1">
+          Created:{" "}
+          {new Date(createdAt).toLocaleDateString()}
         </div>
       </div>
 
