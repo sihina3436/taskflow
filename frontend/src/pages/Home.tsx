@@ -14,7 +14,7 @@ const Home = () => {
       skip: !user?.id,
     });
 
-  /* 🔥 SORT BY NEAREST DUE DATE */
+  /* SORT BY NEAREST DUE DATE */
   const activeTodos = todos
     .filter((t: any) => !t.completed)
     .sort(

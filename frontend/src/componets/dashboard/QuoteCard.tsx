@@ -55,7 +55,7 @@ const getRandomQuote = () =>
 const QuoteCard = () => {
   const [quote, setQuote] = useState(getRandomQuote());
 
-  // auto refresh every 1 minute
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setQuote(getRandomQuote());
@@ -77,10 +77,10 @@ const QuoteCard = () => {
         hover:shadow-md transition
       "
     >
-      {/* small remix icon */}
+      
       <i className="ri-double-quotes-l text-indigo-500 text-lg shrink-0" />
 
-      {/* text */}
+      
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-gray-700 truncate">
           “{quote.text}”

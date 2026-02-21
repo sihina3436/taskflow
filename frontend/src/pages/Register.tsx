@@ -90,7 +90,7 @@ const Register = () => {
               />
             </div>
 
-            {/* 🔥 MODERN GENDER SELECTION */}
+            
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-2">
                 Select Gender
@@ -98,7 +98,7 @@ const Register = () => {
 
               <div className="grid grid-cols-2 gap-4">
 
-                {/* Male */}
+                
                 <label
                   className={`
                     flex items-center justify-center gap-2
@@ -124,7 +124,7 @@ const Register = () => {
                   <span className="text-sm font-medium">Male</span>
                 </label>
 
-                {/* Female */}
+                
                 <label
                   className={`
                     flex items-center justify-center gap-2
@@ -153,7 +153,7 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Submit */}
+            
             <button
               className="w-full bg-primary text-white py-3 rounded-lg hover:opacity-90 transition disabled:opacity-70"
               type="submit"
@@ -175,7 +175,7 @@ const Register = () => {
           </form>
         </div>
 
-        {/* RIGHT SIDE IMAGE */}
+        
         <div className="hidden md:block relative">
           <img
             src={loginImg}

@@ -53,7 +53,7 @@ const AddTodo = () => {
     <Layout>
       <div className="max-w-3xl mx-auto">
 
-        {/* 🔥 HEADER SECTION */}
+        {/* HEADER SECTION */}
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate("/")}
@@ -64,7 +64,7 @@ const AddTodo = () => {
           </button>
 
           <h2 className="text-2xl font-bold text-gray-800">
-            Create New Todo
+            Create New Task
           </h2>
         </div>
 

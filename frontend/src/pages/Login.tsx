@@ -16,7 +16,7 @@ const Login = () => {
 
   const [login, { isLoading }] = useLoginMutation();
 
-  /* ================= SUBMIT ================= */
+
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ const Login = () => {
     <div className="min-h-screen bg-primaryLight flex items-center justify-center px-4">
       <div className="w-full max-w-5xl bg-light-background rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
 
-        {/* ================= LEFT SIDE (FORM) ================= */}
+        
         <div className="p-10 md:p-14 flex flex-col justify-center">
 
           <h1 className="text-3xl font-bold mb-2 text-gray-800">
@@ -61,7 +61,7 @@ const Login = () => {
 
           <form className="space-y-5" onSubmit={handleSubmit}>
 
-            {/* EMAIL */}
+            
             <div className="relative group">
               <i className="ri-mail-line absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition"></i>
 
@@ -75,7 +75,7 @@ const Login = () => {
               />
             </div>
 
-            {/* PASSWORD */}
+           
             <div className="relative group">
               <i className="ri-lock-password-line absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition"></i>
 
@@ -89,7 +89,7 @@ const Login = () => {
               />
             </div>
 
-            {/* 🔥 Forgot Password Link */}
+           
             <div className="text-right">
               <Link
                 to="/forgot-password"
@@ -99,7 +99,7 @@ const Login = () => {
               </Link>
             </div>
 
-            {/* LOGIN BUTTON */}
+            
             <button
               type="submit"
               disabled={isLoading}
@@ -108,7 +108,7 @@ const Login = () => {
               {isLoading ? "Logging in..." : "Login"}
             </button>
 
-            {/* REGISTER LINK */}
+          
             <p className="text-sm text-center text-gray-500 mt-4">
               Don’t have an account?{" "}
               <Link
@@ -122,7 +122,7 @@ const Login = () => {
           </form>
         </div>
 
-        {/* ================= RIGHT SIDE (IMAGE) ================= */}
+       
         <div className="hidden md:block relative">
 
           <img
