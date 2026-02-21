@@ -1,6 +1,6 @@
-# 📝 Modern Todo Management App
+# 📝 Modern Task Management App
 
-A full-stack **Todo Management System** built using **React, Redux Toolkit, Node.js, Express, and MongoDB**.
+A full-stack **Task Management System** built using **React, Redux Toolkit, Node.js, Express,Ts Socket programming and MongoDB **.
 
 This application allows users to manage daily tasks with authentication, modern dashboard UI, reminders, and real-time updates.
 
@@ -63,6 +63,7 @@ This application allows users to manage daily tasks with authentication, modern 
 ## 📂 Project Structure
 
 ### Backend
+```
 backend/
 │
 ├── src/
@@ -77,11 +78,12 @@ backend/
 ├── index.ts
 ├── package.json
 └── tsconfig.json
-
+```
 
 ---
 
 ### Frontend
+```
 frontend/
 │
 ├── src/
@@ -102,7 +104,8 @@ frontend/
 │ ├── util/
 │ ├── App.tsx
 │ └── main.tsx
-
+└──
+```
 
 
 ---
