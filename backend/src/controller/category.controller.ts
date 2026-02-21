@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Category from "../models/category.model";
 
+// Create Category
 export const createCategory = async (
   req: Request,
   res: Response
@@ -46,6 +47,7 @@ export const createCategory = async (
   }
 };
 
+// Get All Categories
 export const getAllCategoriesByUser = async (
   req: Request,
   res: Response
@@ -68,6 +70,7 @@ export const getAllCategoriesByUser = async (
   }
 };
 
+// Delete Category
 export const deleteCategory = async (
   req: Request,
   res: Response

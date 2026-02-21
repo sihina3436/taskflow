@@ -23,7 +23,7 @@ export const startReminder = (io: Server) => {
 
         const dueTime = new Date(todo.due_date).getTime();
 
-        // 🔥 Compare timestamps (timezone safe)
+        // Compare timestamps 
         if (dueTime >= now && dueTime <= oneHourLater) {
           console.log("🔔 Sending reminder to:", todo.user_id.toString());
 

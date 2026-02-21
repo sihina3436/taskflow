@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
+
+interface JwtUserPayload extends JwtPayload {
+  id: string;
+}
+
+
 export interface AuthRequest extends Request {
-  user?: string | JwtPayload;
+  user?: JwtUserPayload;
 }
 
 export const protect = (
@@ -19,10 +25,15 @@ export const protect = (
 
     const token = authHeader.split(" ")[1];
 
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET not defined");
+    }
+
+
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET as string
-    );
+      process.env.JWT_SECRET
+    ) as JwtUserPayload;
 
     req.user = decoded;
 

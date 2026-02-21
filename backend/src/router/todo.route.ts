@@ -15,7 +15,7 @@ import { protect } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-/* ===== specific routes FIRST ===== */
+
 
 router.post("/create", protect, createTodo);
 
@@ -32,7 +32,7 @@ router.put("/complete/:todoId", protect, setTodoIsCompleted);
 router.delete("/:id", protect, deleteTodo);
 
 
-/* ===== catch-all LAST ===== */
+
 
 router.get("/:id", protect, (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {

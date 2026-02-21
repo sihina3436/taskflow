@@ -37,10 +37,10 @@ app.use("/api/todos", todoRouter);
 
 const server = http.createServer(app);
 
-// ✅ Initialize socket first
+// Initialize socket 
 const io = initSocket(server);
 
-// ✅ Start reminder AFTER socket is ready
+// reminder AFTER socket is ready
 startReminder(io);
 
 server.listen(port, () => {

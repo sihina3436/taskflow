@@ -4,9 +4,10 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { sendEmail } from "../utils/sendEmail";
+import { AuthRequest } from "../middleware/auth.middleware";
 
 
-// ================= REGISTER USER =================
+//  REGISTER USER 
 export const registerUser = async (
   req: Request,
   res: Response
@@ -63,7 +64,7 @@ export const registerUser = async (
 };
 
 
-// ================= LOGIN USER =================
+//  LOGIN USER 
 export const loginUser = async (
   req: Request,
   res: Response
@@ -118,17 +119,25 @@ export const loginUser = async (
 };
 
 
-// ================= UPDATE PASSWORD =================
+//  UPDATE PASSWORD
 export const updatePassword = async (
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const { userId } = req.params;
+    const userId = req.user?.id; 
+
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
+    }
+
     const { currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
-      res.status(400).json({ message: "Current and new password are required" });
+      res.status(400).json({
+        message: "Current and new password are required",
+      });
       return;
     }
 
@@ -139,29 +148,30 @@ export const updatePassword = async (
       return;
     }
 
-    const isPasswordValid = await bcrypt.compare(
+    const isValid = await bcrypt.compare(
       currentPassword,
       user.password
     );
 
-    if (!isPasswordValid) {
-      res.status(401).json({ message: "Current password is incorrect" });
+    if (!isValid) {
+      res.status(401).json({
+        message: "Current password is incorrect",
+      });
       return;
     }
 
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
-    res.status(200).json({ message: "Password updated successfully" });
-
+    res.status(200).json({
+      message: "Password updated successfully",
+    });
   } catch (error) {
     console.error("Update password error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
-
-// ================= FORGOT PASSWORD (SEND OTP) =================
+// FORGOT PASSWORD (SEND OTP) 
 export const forgotPassword = async (
   req: Request,
   res: Response
@@ -215,7 +225,7 @@ export const forgotPassword = async (
 };
 
 
-// ================= RESET PASSWORD =================
+//  RESET PASSWORD 
 export const resetPassword = async (
   req: Request,
   res: Response

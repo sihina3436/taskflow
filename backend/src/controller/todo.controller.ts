@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Todo from "../models/todo.model";
 import { AuthRequest } from "../middleware/auth.middleware";
 
-/* ================= CREATE ================= */
+// create Task
 
 export const createTodo = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
@@ -35,8 +35,8 @@ export const createTodo = async (req: AuthRequest, res: Response): Promise<void>
   }
 };
 
-/* ================= GET BY USER ================= */
 
+// get tasks by User
 export const getTodosByUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId } = req.params;
@@ -50,8 +50,7 @@ export const getTodosByUser = async (req: Request, res: Response): Promise<void>
   }
 };
 
-/* ================= GET BY ID ================= */
-
+// get Task by Id
 export const getTodoById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -70,8 +69,8 @@ export const getTodoById = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-/* ================= TODAY ================= */
 
+// get Task by Now Date
 export const getTodoByNowDatebyUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -94,7 +93,7 @@ export const getTodoByNowDatebyUser = async (req: Request, res: Response): Promi
   }
 };
 
-/* ================= STATUS ================= */
+// update Task status
 
 export const updateTodoStatus = async (
   req: Request,
@@ -108,7 +107,7 @@ export const updateTodoStatus = async (
       todoId,
       {
         status,
-        completed: status === "Completed", // sync completed
+        completed: status === "Completed", 
       },
       { new: true }
     );
@@ -118,7 +117,7 @@ export const updateTodoStatus = async (
       return;
     }
 
-    // IMPORTANT: return todo directly (RTK expects this)
+   
     res.status(200).json(updated);
   } catch (error) {
     console.error("Update Status Error:", error);
@@ -126,7 +125,7 @@ export const updateTodoStatus = async (
   }
 };
 
-/* ================= COMPLETE ================= */
+// update Task isCompleted
 
 export const setTodoIsCompleted = async (
   req: Request,
@@ -156,7 +155,7 @@ export const setTodoIsCompleted = async (
   }
 };
 
-/* ================= DELETE (missing before) ================= */
+// delete Task
 
 export const deleteTodo = async (req: Request, res: Response): Promise<void> => {
   try {
