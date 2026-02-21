@@ -9,6 +9,7 @@ import AllTasks from "../pages/AllTasks";
 import ManageCategories from "../pages/ManageCategories";
 import ResetPassword from "../pages/ResetPassword";
 import ForgotPassword from "../pages/ForgotPassword";
+import UpdatePassword from "../componets/dashboard/UpdatePassword";
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
         path: "task-categories",
         element: <ManageCategories />,
       },
+      {
+        path: "/settings",
+        element: <UpdatePassword />,
+      }
     ],
   },
 
