@@ -14,14 +14,27 @@ const AddTodo = () => {
   console.log("Fetched categories:", categories);
   console.log("User ID for fetching categories:", user.id);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    due_date: "",
-    priority: "medium",
-    status: "Not Started",
-    category: "",
-  });
+  type TodoStatus = 
+  | "Completed"
+  | "In Progress"
+  | "Overdue"
+  | "Not Started";
+
+const [formData, setFormData] = useState<{
+  title: string;
+  description: string;
+  due_date: string;
+  priority: string;
+  status: TodoStatus;
+  category: string;
+}>({
+  title: "",
+  description: "",
+  due_date: "",
+  priority: "medium",
+  status: "Not Started",
+  category: "",
+});
 
   const handleChange = (
     e: React.ChangeEvent<

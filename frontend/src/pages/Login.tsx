@@ -34,7 +34,7 @@ const Login = () => {
 
       // Save user in redux
       dispatch(setUser(userData.user));
-      connectSocket(userData.user.id);
+      connectSocket(userData.user._id);
 
 
       navigate("/");
