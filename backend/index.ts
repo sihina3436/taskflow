@@ -18,7 +18,7 @@ const port = process.env.PORT || 3000;
 
 app.use(
   cors({
-    origin: "https://taskflow-frontend-git-main-sihina-nimnadas-projects.vercel.app",
+    origin: "https://taskflow-frontend-f22ze71nk-sihina-nimnadas-projects.vercel.app",
     credentials: true,
   })
 );
