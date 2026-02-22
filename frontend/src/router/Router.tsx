@@ -10,36 +10,10 @@ import ManageCategories from "../pages/ManageCategories";
 import ResetPassword from "../pages/ResetPassword";
 import ForgotPassword from "../pages/ForgotPassword";
 import UpdatePassword from "../componets/dashboard/UpdatePassword";
+import AuthWrapper from "./AuthWrapper"; 
 
 export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      {
-        index: true, // ✅ better than path: "/"
-        element: <Home />,
-      },
-      {
-        path: "add-task",
-        element: <AddTodo />,
-      },
-      {
-        path: "my-task",
-        element: <AllTasks />,
-      },
-      {
-        path: "task-categories",
-        element: <ManageCategories />,
-      },
-      {
-        path: "/settings",
-        element: <UpdatePassword />,
-      }
-    ],
-  },
-
-  // ================= AUTH ROUTES =================
+  //  AUTH ROUTES 
   {
     path: "/login",
     element: <Login />,
@@ -55,5 +29,38 @@ export const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPassword />,
+  },
+
+  // PROTECTED ROUTES 
+  {
+    path: "/",
+    element: <AuthWrapper />, 
+    children: [
+      {
+        element: <App />,
+        children: [
+          {
+            index: true,
+            element: <Home />,
+          },
+          {
+            path: "add-task",
+            element: <AddTodo />,
+          },
+          {
+            path: "my-task",
+            element: <AllTasks />,
+          },
+          {
+            path: "task-categories",
+            element: <ManageCategories />,
+          },
+          {
+            path: "settings",
+            element: <UpdatePassword />,
+          },
+        ],
+      },
+    ],
   },
 ]);
