@@ -38,13 +38,14 @@ const StatusCard = ({ userId }: { userId: string }) => {
   return (
     <div
       className="
-        bg-white/90 backdrop-blur
-        border border-gray-100
-        rounded-3xl
-        shadow-sm
-        p-6
-        hover:shadow-lg
-        transition
+      bg-white/90 backdrop-blur
+      border border-gray-100
+      rounded-3xl
+      shadow-sm
+      p-4 sm:p-6
+      hover:shadow-lg
+      transition
+      w-full
       "
     >
       {/* HEADER */}

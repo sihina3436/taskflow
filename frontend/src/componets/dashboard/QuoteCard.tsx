@@ -48,14 +48,12 @@ const quotes: Quote[] = [
   { text: "Commit. Execute. Repeat.", author: "" }
 ];
 
-
 const getRandomQuote = () =>
   quotes[Math.floor(Math.random() * quotes.length)];
 
 const QuoteCard = () => {
   const [quote, setQuote] = useState(getRandomQuote());
 
-  
   useEffect(() => {
     const interval = setInterval(() => {
       setQuote(getRandomQuote());
@@ -67,33 +65,31 @@ const QuoteCard = () => {
   return (
     <div
       className="
-        w-full lg:w-[360px]
-        bg-white
+        w-full
+      bg-white
         border border-gray-100
         rounded-xl
         shadow-sm
-        px-4 py-3
+        px-3 sm:px-4
+        py-3
         flex items-center gap-3
         hover:shadow-md transition
       "
     >
-      
-      <i className="ri-double-quotes-l text-indigo-500 text-lg shrink-0" />
+      <i className="ri-double-quotes-l text-indigo-500 text-base sm:text-lg shrink-0" />
 
-      
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-700 truncate">
+        <p className="text-xs sm:text-sm font-medium text-gray-700 truncate">
           “{quote.text}”
         </p>
-        <span className="text-xs text-gray-400">
+        <span className="text-[10px] sm:text-xs text-gray-400">
           — {quote.author}
         </span>
       </div>
 
-      {/* refresh */}
       <button
         onClick={() => setQuote(getRandomQuote())}
-        className="text-gray-400 hover:text-indigo-600 text-base shrink-0"
+        className="text-gray-400 hover:text-indigo-600 text-sm sm:text-base shrink-0"
       >
         <i className="ri-refresh-line" />
       </button>

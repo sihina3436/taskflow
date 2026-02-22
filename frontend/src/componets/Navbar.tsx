@@ -10,7 +10,11 @@ interface Reminder {
   priority: string;
 }
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  onHamburgerClick?: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onHamburgerClick }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [notifications, setNotifications] = useState<Reminder[]>([]);
@@ -87,15 +91,25 @@ const Navbar: React.FC = () => {
   return (
     <>
       {/* ================= NAVBAR ================= */}
-      <header className="bg-white shadow px-6 py-4 flex items-center justify-between relative">
+      <header className="bg-white shadow px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between relative gap-2">
+
+        {/* HAMBURGER MOBILE */}
+        {onHamburgerClick && (
+          <button
+            onClick={onHamburgerClick}
+            className="md:hidden text-primary text-2xl mr-2"
+          >
+            <i className="ri-menu-line" />
+          </button>
+        )}
 
         {/* LOGO */}
-        <h1 className="text-xl font-bold">
+        <h1 className="text-xl font-bold flex-1 text-center md:text-left">
           <span className="text-primary">Dash</span>board
         </h1>
 
         {/* SEARCH */}
-        <div className="flex w-[500px]">
+        <div className="flex w-full md:w-[500px] mt-2 md:mt-0">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -111,9 +125,8 @@ const Navbar: React.FC = () => {
           </button>
         </div>
 
-        {/* RIGHT SIDE */}
-        <div className="flex items-center gap-4 relative">
-
+        {/* RIGHT SIDE ICONS */}
+        <div className="flex items-center gap-2 md:gap-4 mt-2 md:mt-0">
           {/* NOTIFICATION */}
           <button
             onClick={() => setOpen(true)}
@@ -136,13 +149,13 @@ const Navbar: React.FC = () => {
           </button>
 
           {/* CLOCK */}
-          <div className="flex items-center gap-2 text-primary text-sm font-medium">
+          <div className="flex items-center gap-1 text-primary text-sm font-medium">
             <i className="ri-time-line text-base" />
             {time}
           </div>
 
           {/* DATE */}
-          <span className="text-primary text-sm font-medium">
+          <span className="hidden sm:block text-primary text-sm font-medium">
             {date}
           </span>
         </div>
@@ -155,7 +168,7 @@ const Navbar: React.FC = () => {
             className="absolute inset-0 bg-black/30 backdrop-blur-md"
             onClick={() => setOpen(false)}
           />
-          <div className="relative bg-white w-[400px] max-h-[500px] rounded-2xl shadow-2xl p-6">
+          <div className="relative bg-white w-[90%] max-w-[400px] max-h-[500px] rounded-2xl shadow-2xl p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">🔔 Notifications</h2>
               <button onClick={() => setOpen(false)}>✕</button>
@@ -173,9 +186,7 @@ const Navbar: React.FC = () => {
                     className="bg-gray-50 border rounded-xl p-3"
                   >
                     <div className="flex justify-between items-center">
-                      <p className="font-semibold text-sm">
-                        {note.title}
-                      </p>
+                      <p className="font-semibold text-sm">{note.title}</p>
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${priorityColor(
                           note.priority
@@ -202,10 +213,8 @@ const Navbar: React.FC = () => {
             className="absolute inset-0 bg-black/30 backdrop-blur-md"
             onClick={() => setShowCalendar(false)}
           />
-          <div className="relative bg-white rounded-2xl shadow-xl p-6 w-[350px]">
-            <h2 className="text-lg font-semibold mb-4">
-              Select Date
-            </h2>
+          <div className="relative bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-[350px]">
+            <h2 className="text-lg font-semibold mb-4">Select Date</h2>
 
             <input
               type="date"

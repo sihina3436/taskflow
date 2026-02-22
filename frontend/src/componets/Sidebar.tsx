@@ -19,20 +19,30 @@ const menu: MenuItem[] = [
   { path: "/settings", name: "Settings", icon: "ri-settings-3-line" },
 ];
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const { user } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(logout()); // clears redux + localStorage
+    dispatch(logout());
     navigate("/login");
+    if (onClose) onClose();
   };
 
   return (
-    <aside className="w-64 min-h-screen sticky top-0 bg-primary p-6 flex flex-col shadow-xl">
+    <aside className="w-64 md:w-64 h-full bg-primary p-4 md:p-6 flex flex-col text-white">
       
-      {/* ================= PROFILE ================= */}
+      {onClose && (
+        <button
+          className="mb-4 md:hidden text-white self-end text-xl"
+          onClick={onClose}
+        >
+          ✕
+        </button>
+      )}
+
+      {/* PROFILE */}
       <div className="bg-white/10 backdrop-blur rounded-2xl p-4 text-center mb-8 shadow-md">
         <img
           src={user?.gender === "male" ? ManImg : WomanImg}
@@ -43,7 +53,7 @@ const Sidebar: React.FC = () => {
         <p className="text-xs opacity-80 text-white">{user?.email}</p>
       </div>
 
-      {/* ================= MENU ================= */}
+      {/* MENU */}
       <nav className="flex flex-col gap-1 flex-1">
         {menu.map((item) => (
           <NavLink
@@ -52,26 +62,18 @@ const Sidebar: React.FC = () => {
             className={({ isActive }) =>
               `flex items-center gap-2 px-4 py-3 rounded-xl
                transition-all duration-200 group
-               ${
-                 isActive
-                   ? "bg-white text-primary shadow-lg"
-                   : "hover:bg-white/20 text-white"
-               }`
+               ${isActive ? "bg-white text-primary shadow-lg" : "hover:bg-white/20 text-white"}`
             }
+            onClick={onClose}
           >
             {({ isActive }) => (
               <>
                 <span
                   className={`w-9 h-9 flex items-center justify-center rounded-lg
-                    ${
-                      isActive
-                        ? "bg-primary text-white"
-                        : "bg-white/20 group-hover:bg-white/30"
-                    }`}
+                    ${isActive ? "bg-primary text-white" : "bg-white/20 group-hover:bg-white/30"}`}
                 >
                   <i className={`${item.icon} text-lg`} />
                 </span>
-
                 <span className="text-sm font-medium">{item.name}</span>
               </>
             )}
@@ -79,13 +81,12 @@ const Sidebar: React.FC = () => {
         ))}
       </nav>
 
-      {/* ================= LOGOUT ================= */}
+      {/* LOGOUT */}
       <button
         onClick={handleLogout}
         className="mt-4 py-3 rounded-xl bg-white/20 text-white hover:bg-white hover:text-primary transition font-medium"
       >
-        <i className="ri-logout-box-r-line mr-2"></i>
-        Logout
+        <i className="ri-logout-box-r-line mr-2"></i> Logout
       </button>
     </aside>
   );

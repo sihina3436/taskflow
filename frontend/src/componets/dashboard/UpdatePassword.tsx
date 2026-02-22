@@ -38,7 +38,7 @@ const UpdatePassword = () => {
 
   return (
     <Layout>
-      <div className="max-w-md mx-auto mt-10">
+      <div className="max-w-md w-full mx-auto mt-6 sm:mt-10 px-4">
 
         <div className="bg-white/70 backdrop-blur-lg border border-gray-100 rounded-3xl shadow-lg p-8">
 

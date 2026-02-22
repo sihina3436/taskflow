@@ -86,11 +86,12 @@ const TaskCard: React.FC<Props> = ({
     <div
       className={`
         group
-        bg-white/80 backdrop-blur-lg
+      bg-white/80 backdrop-blur-lg
         border ${alertBorder}
         rounded-3xl
-        p-5
-        flex items-start gap-5
+        p-4 sm:p-5
+        flex flex-col sm:flex-row
+        items-start gap-4 sm:gap-5
         shadow-sm
         hover:shadow-xl
         hover:-translate-y-1
@@ -210,7 +211,7 @@ const TaskCard: React.FC<Props> = ({
       <img
         src={TodoIMG}
         alt=""
-        className="w-20 h-20 rounded-2xl object-cover hidden sm:block"
+        className="w-full sm:w-20 h-40 sm:h-20 rounded-2xl object-cover mt-3 sm:mt-0"
       />
 
       {/* DELETE */}
